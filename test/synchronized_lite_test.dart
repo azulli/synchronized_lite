@@ -5,11 +5,10 @@ import 'package:synchronized_lite/synchronized_lite.dart';
 import 'dart:async';
 
 void main() {
-
   const attempts = 100;
-  Completer completer;
-  int i;
-  Lock lock;
+  late Completer completer;
+  late int i;
+  late Lock lock;
 
   slowIncrement() async {
     var i0 = i;
@@ -48,19 +47,21 @@ void main() {
   });
 
   test("With synchronized(), all incrementers run sequentially", () async {
-    List<Future<int>> futures = List.generate(attempts, (i) => lock.synchronized<int>(slowIncrement));
+    List<Future<int>> futures =
+        List.generate(attempts, (i) => lock.synchronized<int>(slowIncrement));
     expect(i, equals(0));
     completer.complete();
     var results = await Future.wait<int>(futures);
     expect(i, equals(attempts));
-    expect(results, equals(List.generate(attempts, (i) => i+1).toList()));
+    expect(results, equals(List.generate(attempts, (i) => i + 1).toList()));
   });
 
   test("Non-async functions work correctly with synchronized()", () async {
-    List<Future<int>> futures = List.generate(attempts, (i) => lock.synchronized<int>(fastIncrement));
+    List<Future<int>> futures =
+        List.generate(attempts, (i) => lock.synchronized<int>(fastIncrement));
     var results = await Future.wait<int>(futures);
     expect(i, equals(attempts));
-    expect(results, equals(List.generate(attempts, (i) => i+1).toList()));
+    expect(results, equals(List.generate(attempts, (i) => i + 1).toList()));
   });
 
   test("Exceptions are propagated", () async {
@@ -73,5 +74,4 @@ void main() {
     expect(future2, completion(equals(1)));
     expect(future3, throwsA(equals("failed")));
   });
-
 }

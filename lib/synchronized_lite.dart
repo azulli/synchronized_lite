@@ -7,7 +7,7 @@ import 'dart:async';
  * A lock that guards against concurrent executions of synchronized functions.
  */
 class Lock {
-  Future _last;
+  Future? _last;
 
   /**
    * Runs [func] sequentially with other functions invoked using [synchronized] of the same [Lock] instance.
